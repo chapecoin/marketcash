@@ -24,6 +24,7 @@ namespace parameters {
 #define CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX         124 // starts with "M"
 #define CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW            10
 #define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT              360
+#define CRYPTONOTE_BLOCK_CONSENSUS_FEE_HOLD             2 //50% for hold platform
 
 #define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW               60
 
@@ -90,6 +91,7 @@ namespace parameters {
 #define UPGRADE_HEIGHT_V3                               2
 #define UPGRADE_HEIGHT_V4                               64600
 #define UPGRADE_HEIGHT_V5                               64700
+#define UPGRADE_HEIGHT_V6                               265918
 
 #define UPGRADE_VOTING_THRESHOLD                        90
 #define UPGRADE_VOTING_WINDOW                           EXPECTED_NUMBER_OF_BLOCKS_PER_DAY
@@ -115,6 +117,7 @@ namespace parameters {
 #define BLOCK_MAJOR_VERSION_3                           3
 #define BLOCK_MAJOR_VERSION_4                           4
 #define BLOCK_MAJOR_VERSION_5                           5
+#define BLOCK_MAJOR_VERSION_6                           6
 
 #define BLOCK_MINOR_VERSION_0                           0
 #define BLOCK_MINOR_VERSION_1                           1

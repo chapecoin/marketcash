@@ -64,7 +64,7 @@ const Crypto::Hash& CachedBlock::getBlockLongHash(cn_context& cryptoContext) con
       //printf("Crypto::Hash& CachedBlock::getBlockLongHash, cn_slow_hash\n");
       cn_slow_hash(cryptoContext, rawHashingBlock.data(), rawHashingBlock.size(), blockLongHash.get(), 0x80000);
     } 
-else if (block.majorVersion == BLOCK_MAJOR_VERSION_5) {
+else if (block.majorVersion >= BLOCK_MAJOR_VERSION_5) {
 
 
     const auto& rawHashingBlock = getParentBlockHashingBinaryArray(true);

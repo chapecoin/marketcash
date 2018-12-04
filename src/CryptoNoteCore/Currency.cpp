@@ -23,10 +23,12 @@
 #include "TransactionExtra.h"
 #include "UpgradeDetector.h"
 
+
 #undef ERROR
 
 using namespace Logging;
 using namespace Common;
+
 
 namespace CryptoNote {
 
@@ -181,7 +183,10 @@ else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
   else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
 
     return m_upgradeHeightV5;
-  }
+  }else if (majorVersion == BLOCK_MAJOR_VERSION_6) {
+
+    return m_upgradeHeightV6;
+}
 else {
     return static_cast<uint32_t>(-1);
   }
@@ -226,6 +231,35 @@ size_t Currency::maxBlockCumulativeSize(uint64_t height) const {
   return maxSize;
 }
 
+bool Currency::getRewardConsensusHold(uint64_t& consensusFee, uint64_t& modConsensusReward, uint64_t& blockReward) const {
+	consensusFee = blockReward / CRYPTONOTE_BLOCK_CONSENSUS_FEE_HOLD;
+	modConsensusReward = blockReward % 2;
+	blockReward -= consensusFee;
+	if (modConsensusReward > 0) {
+		// Not divisible by two. Taking out modReward
+		consensusFee -= modConsensusReward;
+		// Give modReward back to block reward
+		blockReward += modConsensusReward;
+	}
+	return true;
+}
+
+bool Currency::checkRewardConsensusHold(uint64_t blockReward, uint64_t amount, uint64_t& blockTempReward) const {
+	uint64_t consensusFee;
+	uint64_t modConsensusReward;
+	blockTempReward = blockReward;	
+
+	if ((getRewardConsensusHold(consensusFee, modConsensusReward, blockTempReward))) {
+		logger(DEBUGGING) << "Hold Consensus 1";
+	}
+
+	if (consensusFee == amount) {
+		return true;
+	}
+	
+	return false;
+}
+
 bool Currency::constructMinerTx(uint8_t blockMajorVersion, uint32_t height, size_t medianSize, uint64_t alreadyGeneratedCoins, size_t currentBlockSize,
   uint64_t fee, const AccountPublicAddress& minerAddress, Transaction& tx, const BinaryArray& extraNonce/* = BinaryArray()*/, size_t maxOuts/* = 1*/) const {
 
@@ -251,6 +285,15 @@ bool Currency::constructMinerTx(uint8_t blockMajorVersion, uint32_t height, size
     return false;
   }
 
+  uint64_t consensusFee;
+  uint64_t modConsensusReward;
+  bool consensu_get;
+
+	  consensu_get = getRewardConsensusHold(consensusFee, modConsensusReward, blockReward);
+	  
+
+
+
   std::vector<uint64_t> outAmounts;
   decompose_amount_into_digits(blockReward, m_defaultDustThreshold,
     [&outAmounts](uint64_t a_chunk) { outAmounts.push_back(a_chunk); },
@@ -261,35 +304,94 @@ bool Currency::constructMinerTx(uint8_t blockMajorVersion, uint32_t height, size
     return false;
   }
 
+  //Abre espaço para uma tx se necessário
+  if (maxOuts > 2) {
+	  maxOuts -= 1;
+  }
+
   while (maxOuts < outAmounts.size()) {
     outAmounts[outAmounts.size() - 2] += outAmounts.back();
     outAmounts.resize(outAmounts.size() - 1);
   }
 
+	  outAmounts.insert(outAmounts.begin(), (consensusFee));
+
+
+  // Initialize Hold address
+  std::string addressStr = "MopjfWSd56tC2z9eo2zVv6JfUPGbENYsEJzGAFXVeGdZZdoSMYppyetSwVbyfKUd7HJdtt1d7CbYTgHHwL251HK7VRQi7BR";
+  CryptoNote::AccountPublicAddress holdAddress;
+  if (!(CryptoNote::Currency::parseAccountAddressString(addressStr, holdAddress))) {
+	  logger(ERROR, BRIGHT_RED) << "Could not get hold public key";
+  }
+
   uint64_t summaryAmounts = 0;
   for (size_t no = 0; no < outAmounts.size(); no++) {
-    Crypto::KeyDerivation derivation = boost::value_initialized<Crypto::KeyDerivation>();
-    Crypto::PublicKey outEphemeralPubKey = boost::value_initialized<Crypto::PublicKey>();
+	  Crypto::KeyDerivation derivation = boost::value_initialized<Crypto::KeyDerivation>();
+	  Crypto::PublicKey outEphemeralPubKey = boost::value_initialized<Crypto::PublicKey>();
 
-    bool r = Crypto::generate_key_derivation(minerAddress.viewPublicKey, txkey.secretKey, derivation);
 
-    if (!(r)) {
-      logger(ERROR, BRIGHT_RED)
-        << "while creating outs: failed to generate_key_derivation("
-        << minerAddress.viewPublicKey << ", " << txkey.secretKey << ")";
-      return false;
-    }
+	  if (height >= UPGRADE_HEIGHT_V6){
+		  if (no == 0) {
+			  bool r = Crypto::generate_key_derivation(holdAddress.viewPublicKey, txkey.secretKey, derivation);
 
-    r = Crypto::derive_public_key(derivation, no, minerAddress.spendPublicKey, outEphemeralPubKey);
+			  if (!(r)) {
+				  logger(ERROR, BRIGHT_RED)
+					  << "while creating outs: failed to generate_key_derivation("
+					  << holdAddress.viewPublicKey << ", " << txkey.secretKey << ")";
+				  return false;
+			  }
 
-    if (!(r)) {
-      logger(ERROR, BRIGHT_RED)
-        << "while creating outs: failed to derive_public_key("
-        << derivation << ", " << no << ", "
-        << minerAddress.spendPublicKey << ")";
-      return false;
-    }
+			  r = Crypto::derive_public_key(derivation, no, holdAddress.spendPublicKey, outEphemeralPubKey);
 
+			  if (!(r)) {
+				  logger(ERROR, BRIGHT_RED)
+					  << "while creating outs: failed to derive_public_key("
+					  << derivation << ", " << no << ", "
+					  << holdAddress.spendPublicKey << ")";
+				  return false;
+			  }
+		  }
+		  else {
+
+			  bool r = Crypto::generate_key_derivation(minerAddress.viewPublicKey, txkey.secretKey, derivation);
+
+			  if (!(r)) {
+				  logger(ERROR, BRIGHT_RED)
+					  << "while creating outs: failed to generate_key_derivation("
+					  << minerAddress.viewPublicKey << ", " << txkey.secretKey << ")";
+				  return false;
+			  }
+
+			  r = Crypto::derive_public_key(derivation, no, minerAddress.spendPublicKey, outEphemeralPubKey);
+
+			  if (!(r)) {
+				  logger(ERROR, BRIGHT_RED)
+					  << "while creating outs: failed to derive_public_key("
+					  << derivation << ", " << no << ", "
+					  << minerAddress.spendPublicKey << ")";
+				  return false;
+			  }
+		  }
+	  } else {
+		  bool r = Crypto::generate_key_derivation(minerAddress.viewPublicKey, txkey.secretKey, derivation);
+
+		  if (!(r)) {
+			  logger(ERROR, BRIGHT_RED)
+				  << "while creating outs: failed to generate_key_derivation("
+				  << minerAddress.viewPublicKey << ", " << txkey.secretKey << ")";
+			  return false;
+		  }
+
+		  r = Crypto::derive_public_key(derivation, no, minerAddress.spendPublicKey, outEphemeralPubKey);
+
+		  if (!(r)) {
+			  logger(ERROR, BRIGHT_RED)
+				  << "while creating outs: failed to derive_public_key("
+				  << derivation << ", " << no << ", "
+				  << minerAddress.spendPublicKey << ")";
+			  return false;
+		  }
+	  }
     KeyOutput tk;
     tk.key = outEphemeralPubKey;
 
@@ -299,7 +401,7 @@ bool Currency::constructMinerTx(uint8_t blockMajorVersion, uint32_t height, size
     tx.outputs.push_back(out);
   }
 
-  if (!(summaryAmounts == blockReward)) {
+  if (!(summaryAmounts == (blockReward + consensusFee))) {
     logger(ERROR, BRIGHT_RED) << "Failed to construct miner tx, summaryAmounts = " << summaryAmounts << " not equal blockReward = " << blockReward;
     return false;
   }
@@ -468,7 +570,7 @@ Difficulty Currency::nextDifficulty(uint8_t version, uint32_t blockIndex, std::v
 if (blockIndex >= (UPGRADE_HEIGHT_V5-1) && blockIndex <= (UPGRADE_HEIGHT_V5+100) ) {return 4000000;}
 
 //new MarketCash diff code
-  if (version == BLOCK_MAJOR_VERSION_5 ) {
+  if (version >= BLOCK_MAJOR_VERSION_5 ) {
     int64_t T = m_difficultyTarget;
 
 //printf("size ts:%lu\n",timestamps.size());
@@ -693,6 +795,7 @@ bool Currency::checkProofOfWork(Crypto::cn_context& context, const CachedBlock& 
   case BLOCK_MAJOR_VERSION_3:
   case BLOCK_MAJOR_VERSION_4:
   case BLOCK_MAJOR_VERSION_5:
+  case BLOCK_MAJOR_VERSION_6:
 
     return checkProofOfWorkV2(context, block, currentDiffic);
   }
@@ -762,6 +865,7 @@ m_upgradeHeightV2(currency.m_upgradeHeightV2),
 m_upgradeHeightV3(currency.m_upgradeHeightV3),
 m_upgradeHeightV4(currency.m_upgradeHeightV4),
 m_upgradeHeightV5(currency.m_upgradeHeightV5),
+m_upgradeHeightV6(currency.m_upgradeHeightV6),
 
 m_upgradeVotingThreshold(currency.m_upgradeVotingThreshold),
 m_upgradeVotingWindow(currency.m_upgradeVotingWindow),
@@ -839,6 +943,7 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   upgradeHeightV3(UPGRADE_HEIGHT_V3);
   upgradeHeightV4(UPGRADE_HEIGHT_V4);
   upgradeHeightV5(UPGRADE_HEIGHT_V5);
+  upgradeHeightV6(UPGRADE_HEIGHT_V6);
 
   upgradeVotingThreshold(UPGRADE_VOTING_THRESHOLD);
   upgradeVotingWindow(UPGRADE_VOTING_WINDOW);

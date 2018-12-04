@@ -29,7 +29,8 @@ enum class BlockValidationError {
   CHECKPOINT_BLOCK_HASH_MISMATCH,
   PROOF_OF_WORK_TOO_WEAK,
 NO_MORE_BLOCK,
-  TRANSACTION_ABSENT_IN_POOL
+  TRANSACTION_ABSENT_IN_POOL,
+  REJECT_TX_HOLD
 };
 
 // custom category:
@@ -62,6 +63,7 @@ public:
       case BlockValidationError::PROOF_OF_WORK_TOO_WEAK: return "Proof of work is too weak";
 case BlockValidationError::NO_MORE_BLOCK: return "Kill block reached";
       case BlockValidationError::TRANSACTION_ABSENT_IN_POOL: return "Block's transaction is absent in transaction pool";
+	  case BlockValidationError::REJECT_TX_HOLD: return "Transaction to the hold not found";
       default: return "Unknown error";
     }
   }
