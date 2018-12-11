@@ -7,8 +7,20 @@ Portions Copyright (c) 2012-2017, The CryptoNote Developers, The Bytecoin Develo
 https://github.com/MarketCashME/marketcash/releases
 
 # GUI Wallet
-Located Here: https://github.com/MarketCashME/marketcash-gui
+You can see the code here: https://github.com/MarketCashME/marketcash-gui
 
+# Technical Details
+Total Supply: 300M (300,000,000)
+
+Daemon Port: 32267
+
+Decimal Units: 8
+
+Minimum Fee: 0.0001
+
+Block Time: 90s (1:30m)
+
+Algorithm: CryptoNight-MarketCash
 
 # How to Compile on Linux (Ubuntu)
 
@@ -17,6 +29,8 @@ Located Here: https://github.com/MarketCashME/marketcash-gui
 ```sudo apt-get -y install gcc-4.8 g++-4.8  git cmake```
 
 ```git clone https://github.com/MarketCashME/marketcash```
+
+```chmod -Rf 775 marketcash```
 
 ```cd marketcash```
 
