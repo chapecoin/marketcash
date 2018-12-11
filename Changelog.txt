@@ -1,0 +1,16 @@
+	v1.3
+	++ Additional security layer to walletd
+	++ Initial Hold System
+	++ Validation of transactions for the hold system
+	++ Change in version count
+	
+	v1.2.0
+	++ Algorithm Update (Cryptonight-Marketcash)
+	++ Synchronization Improviment
+	++ Timestamp update
+	++ Difficult algorithm update
+	++ Additional security layer to simplewallet (RPC)
+	++ Transaction size limit
+	
+	v1.1.0
+	++ RocksDB update
