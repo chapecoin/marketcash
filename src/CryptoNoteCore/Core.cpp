@@ -908,7 +908,7 @@ std::error_code Core::submitBlock(BinaryArray&& rawBlockTemplate) {
  }
 
   CachedBlock cachedBlock(blockTemplate);
- logger(Logging::INFO) << "block contructed, calling AddBlock for block hash:" << cachedBlock.getBlockHash();
+ logger(Logging::INFO) << "block constructed, calling AddBlock for block hash:" << cachedBlock.getBlockHash();
   return addBlock(cachedBlock, std::move(rawBlock));
 }
 
