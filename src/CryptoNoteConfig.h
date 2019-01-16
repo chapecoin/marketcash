@@ -105,7 +105,7 @@ namespace parameters {
 
 } // parameters
 
-#define CRYPTONOTE_NAME                                 "mkt"
+#define CRYPTONOTE_NAME                                 "chapecoin"
 #define CRYPTONOTE_GENESIS_TX                           "010a01ff00019edda6a90d029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101a171ce204f05ef6157ef090820c36c4e685b2bd3d2142c6005141f2bbc92fe0c"
 
 
@@ -145,12 +145,7 @@ namespace parameters {
 
 
 const std::initializer_list<const char*> SEED_NODES {
-   "173.249.39.84:32266",
-   "158.69.175.19:32266",
-   "173.212.226.144:32266",
-   "35.226.167.162:32266",
-   "52.67.140.70:32266",
-   "5.189.158.241:32266"
+   "192.168.200.87:32266"
   
 };
 
