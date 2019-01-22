@@ -1,13 +1,13 @@
-# MarketCash
+# chapecoin
 
-Copyright (c) 2018, The MarketCash Developers.   
+Copyright (c) 2018, The chapecoin Developers.   
 Portions Copyright (c) 2012-2017, The CryptoNote Developers, The Bytecoin Developers.
 
 # Download Releases
-https://github.com/MarketCashME/marketcash/releases
+https://github.com/chapecoin/marketcash/releases
 
 # GUI Wallet
-You can see the code here: https://github.com/MarketCashME/marketcash-gui
+You can see the code here: https://github.com/chapecoin/marketcash-gui
 
 # Technical Details
 Total Supply: 300M (300,000,000)
@@ -20,7 +20,7 @@ Minimum Fee: 0.0001
 
 Block Time: 90s (1:30m)
 
-Algorithm: CryptoNight-MarketCash
+Algorithm: CryptoNight-chapecoin
 
 # How to Compile on Linux (Ubuntu)
 
@@ -28,11 +28,11 @@ Algorithm: CryptoNight-MarketCash
 
 ```sudo apt-get -y install gcc-4.8 g++-4.8  git cmake```
 
-```git clone https://github.com/MarketCashME/marketcash```
+```git clone https://github.com/chapecoin/marketcash```
 
-```chmod -Rf 775 marketcash```
+```chmod -Rf 775 chapecoin```
 
-```cd marketcash```
+```cd chapecoin```
 
 ```mkdir build ; cd build```
 
@@ -43,19 +43,19 @@ Algorithm: CryptoNight-MarketCash
 
 
 
-## Introduction
+## Introdução
 
-MarketCash is a private, secure, untraceable, decentralised digital currency. We know that the financial market and the economy are in constant transformation and most of the people are already inserted in the digital environment. In this context, blockchain technology comes to innovate and change radically how we make use of money to buy and sell products and services. Taking all this into account, our team intends to innovate using blockchain technology and thus, to reach a totally new level for the use of cryptocurrencies.
+O chapecoin é uma moeda digital privada, segura, não rastreável e descentralizada. Sabemos que o mercado financeiro e a economia estão em constante transformação e a maioria das pessoas já está inserida no ambiente digital. Neste contexto, a tecnologia blockchain vem para inovar e mudar radicalmente a forma como usamos dinheiro para comprar e vender produtos e serviços. Levando tudo isso em conta, nossa equipe pretende inovar usando a tecnologia blockchain e, assim, alcançar um nível totalmente novo para o uso de criptomoedas.
 
-For this, we have the mission of being the largest platform for exchanging cryptocurrencies, being a reference for agility, ease and security. The first of our many goals is to accept numerous consolidated cryptocurrencies in our platform, as well as giving opportunities for new ones that are emerging.
+Para isso, temos a missão de ser a maior plataforma de troca de criptomoedas, sendo referência para agilidade, facilidade e segurança. O primeiro de nossos muitos objetivos é aceitar numerosas criptomoedas consolidadas em nossa plataforma, além de dar oportunidades para novas que estão surgindo.
 
-Our next step will be to create Payment Gateways, exclusively to accept digital currency payments. This project will allow the integration into e-commerce systems and will be made available to products and services retail websites, thus breaking the barrier of which digital currency is only for investments.
+Nosso próximo passo será criar Gateways de Pagamento, exclusivamente para aceitar pagamentos em moeda digital. Este projeto permitirá a integração em sistemas de e-commerce e será disponibilizado para sites de varejo de produtos e serviços, quebrando assim a barreira de que a moeda digital é apenas para investimentos.
 
-In addition, digital wallets for storage of cryptocurrencies will be made available on our exchange, as well as exclusive applications for Android, iOS, Linux and Windows platforms.
+Além disso, as carteiras digitais para armazenamento de criptomoedas serão disponibilizadas em nossa bolsa, bem como aplicativos exclusivos para plataformas Android, iOS, Linux e Windows.
 
-Our team is very experienced and has the necessary knowledge to overcome the great challenges of the project. In the same way, we are very excited to give a new usability to the blockchain and the virtual currencies.
+Nossa equipe é muito experiente e possui o conhecimento necessário para superar os grandes desafios do projeto. Da mesma forma, estamos muito animados para dar uma nova usabilidade ao blockchain e às moedas virtuais.
 
 
-# License
+# Licença
 
-MarketCash is licensed under the "MIT License", see [LICENSE](LICENSE) for more info.
+O chapecoin está licenciado sob a "Licença MIT", veja [LICENÇA] (LICENÇA) para mais informações.
